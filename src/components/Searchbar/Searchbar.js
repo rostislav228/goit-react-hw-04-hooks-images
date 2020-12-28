@@ -5,15 +5,13 @@ function Searchbar({ onSubmit }) {
   const [name, setName] = useState("");
 
   const changeHandler = (e) => {
-    console.log(e.target.value);
     setName(e.target.value);
   };
 
-  const submitHandler = (e) => {
+  function submitHandler(e) {
     e.preventDefault();
-    console.log(name);
     onSubmit(name);
-  };
+  }
 
   return (
     <header className={s.Searchbar}>

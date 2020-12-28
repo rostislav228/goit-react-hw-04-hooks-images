@@ -13,6 +13,21 @@ function App() {
   const [status, setStatus] = useState("idle");
 
   useEffect(() => {
+    if (status !== "pending") {
+      console.log("облом, не будет доп. запроса");
+      return;
+    }
+    searchName().then(() => {
+      if (message) {
+        setStatus("rejected");
+      }
+      setStatus("resolved");
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  useEffect(() => {
     if (page === 1) {
       return;
     }
@@ -23,44 +38,25 @@ function App() {
     });
   }, [query, page]);
 
-  const incrementPage = () => {
-    setPage(page + 1);
-  };
   const nameChange = (newName) => {
-    console.log(newName);
-    // newName есть, и будет равнятся введенной строке
-    setName(newName);
-    console.log(name);
-    // name не обновился, даже через 10 сек, но если нажать на form Searchbar, то name обновится на старое занчение
-    setTimeout(() => {
-      console.log(name);
-    }, 10000);
-    setQuery([]);
     setStatus("pending");
+    setName(newName);
+    setQuery([]);
     setPage(1);
+    setMessage("");
+  };
 
-    searchName().then(() => {
-      if (message) {
-        setStatus("rejected");
-        return;
-      }
-      setStatus("resolved");
-    });
+  const incrementPage = () => {
+    setPage((page) => page + 1);
   };
 
   const addRequest = () => {
     setStatus("pending");
     incrementPage();
-
-    searchName().then(() => {
-      setStatus("resolved");
-    });
+    console.log("на меня нажали?");
   };
 
   const searchName = () => {
-    console.log(name);
-    console.log(page);
-    setMessage("");
     return fetch(
       `https://pixabay.com/api/?q=${name}&page=${page}&key=19045968-692e1124089d7d7c1e82b7642&image_type=photo&orientation=horizontal&per_page=12`
     )
